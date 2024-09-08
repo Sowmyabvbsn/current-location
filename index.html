@@ -1,0 +1,102 @@
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<!-- TODO: CHANGE THE API KEY -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3vUTHAMOh2-seOXtrVsnQHn2qKU6MpjE&callback=initMap"
+        async defer></script>
+<script type="text/javascript">
+    $(function () {
+        $("#showMyLocation").click(function (event) {
+            event.preventDefault();
+            $(this).html('Determining address...');
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var geocoder = new google.maps.Geocoder();
+                var latLng   = new google.maps.LatLng(
+                    position.coords.latitude, position.coords.longitude);
+                geocoder.geocode({
+                    'latLng': latLng
+                }, function (results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    var address = results[0].address_components[0];
+                    $('#postcode_current').html(extractFromAdress(results[0].address_components, "postal_code"));
+                    $('#street_current').html(extractFromAdress(results[0].address_components, "route"));
+                    $('#town_current').html(extractFromAdress(results[0].address_components, "locality"));
+                    $('#country_current').html(extractFromAdress(results[0].address_components, "country"));
+                    $('#address_current').html(results[0].formatted_address);
+                    $("#latitude_current").html(results[0].geometry.location.lat());
+                    $("#longitude_current").html(results[0].geometry.location.lng());
+                    $("#showMyLocation").html('Get current location again...');
+                  } else {
+                    alert("Unable to get your current location for the following reason: " + status);
+                  }
+                });
+            });
+            return false;
+        });
+
+        $("#locationLookup").click(function (event) {
+          event.preventDefault();
+          var address = $("#location").val();
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode( { 'address': address }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+               $('#postcode').html(extractFromAdress(results[0].address_components, "postal_code"));
+               $('#street').html(extractFromAdress(results[0].address_components, "route"));
+               $('#town').html(extractFromAdress(results[0].address_components, "locality"));
+               $('#country').html(extractFromAdress(results[0].address_components, "country"));
+               $('#address').html(results[0].formatted_address);
+               $("#latitude").html(results[0].geometry.location.lat());
+               $("#latitude").html(results[0].geometry.location.lat());
+               $("#longitude").html(results[0].geometry.location.lng());
+            } else {
+              alert("Geocode was not successful for the following reason: " + status);
+            }
+          });
+        });
+
+        function extractFromAdress(components, type){
+          for (var i=0; i<components.length; i++)
+              for (var j=0; j<components[i].types.length; j++)
+                  if (components[i].types[j]==type) return components[i].long_name;
+          return "";
+      }
+    });
+</script>
+
+<h1>Location search</h1>
+
+<h2>Current location</h2>
+<a href="#" id="showMyLocation">Get my current location</a>
+<br /><br />
+<b>Address: </b><span id="address_current"></span>
+<br />
+<b>Post Code: </b><span id="postcode_current"></span>
+<br />
+<b>Street: </b><span id="street_current"></span>
+<br />
+<b>Town: </b><span id="town_current"></span>
+<br />
+<b>Country: </b><span id="country_current"></span>
+<br />
+<b>Latitude: </b><span id="latitude_current"></span>
+<br />
+<b>Longitude: </b><span id="longitude_current"></span>
+
+<br /><br />
+<hr />
+
+<h2>Get long / lat from location</h2>
+
+<input id="location" placeholder="Please enter your location..." /> <a href="#" id="locationLookup">Get lat / long for this location</a>
+<br /><br />
+<b>Address: </b><span id="address"></span>
+<br />
+<b>Post Code: </b><span id="postcode"></span>
+<br />
+<b>Street: </b><span id="street"></span>
+<br />
+<b>Town: </b><span id="town"></span>
+<br />
+<b>Country: </b><span id="country"></span>
+<br />
+<b>Latitude: </b><span id="latitude"></span>
+<br />
+<b>Longitude: </b><span id="longitude"></span>
