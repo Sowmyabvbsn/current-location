@@ -1,5 +1,4 @@
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-<!-- TODO: CHANGE THE API KEY -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3vUTHAMOh2-seOXtrVsnQHn2qKU6MpjE&callback=initMap"
         async defer></script>
 <script type="text/javascript">
@@ -47,7 +46,7 @@
                $("#latitude").html(results[0].geometry.location.lat());
                $("#longitude").html(results[0].geometry.location.lng());
             } else {
-              alert("Geocode was not successful for the following reason: " + status);
+              alert("Cannot retrieve your current location");
             }
           });
         });
